@@ -13,6 +13,8 @@
 		1687088320B6687000D422B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1687088220B6687000D422B2 /* Assets.xcassets */; };
 		1687088620B6687000D422B2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1687088420B6687000D422B2 /* LaunchScreen.storyboard */; };
 		1687088920B6687000D422B2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687088820B6687000D422B2 /* main.m */; };
+		1687089220B66D1900D422B2 /* XibProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1687089120B66D1900D422B2 /* XibProcessor.m */; };
+		1687089520B6949700D422B2 /* ViewA.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1687089420B6949700D422B2 /* ViewA.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,9 @@
 		1687088520B6687000D422B2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1687088720B6687000D422B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1687088820B6687000D422B2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1687089020B66D1900D422B2 /* XibProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XibProcessor.h; sourceTree = "<group>"; };
+		1687089120B66D1900D422B2 /* XibProcessor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XibProcessor.m; sourceTree = "<group>"; };
+		1687089420B6949700D422B2 /* ViewA.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewA.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +63,7 @@
 		1687087820B6687000D422B2 /* Xib2ObjC */ = {
 			isa = PBXGroup;
 			children = (
+				1687088F20B66CEF00D422B2 /* XibProcessor */,
 				1687087920B6687000D422B2 /* AppDelegate.h */,
 				1687087A20B6687000D422B2 /* AppDelegate.m */,
 				1687087C20B6687000D422B2 /* ViewController.h */,
@@ -67,8 +73,26 @@
 				1687088420B6687000D422B2 /* LaunchScreen.storyboard */,
 				1687088720B6687000D422B2 /* Info.plist */,
 				1687088820B6687000D422B2 /* main.m */,
+				1687089320B6948600D422B2 /* Xibs */,
 			);
 			path = Xib2ObjC;
+			sourceTree = "<group>";
+		};
+		1687088F20B66CEF00D422B2 /* XibProcessor */ = {
+			isa = PBXGroup;
+			children = (
+				1687089020B66D1900D422B2 /* XibProcessor.h */,
+				1687089120B66D1900D422B2 /* XibProcessor.m */,
+			);
+			path = XibProcessor;
+			sourceTree = "<group>";
+		};
+		1687089320B6948600D422B2 /* Xibs */ = {
+			isa = PBXGroup;
+			children = (
+				1687089420B6949700D422B2 /* ViewA.xib */,
+			);
+			path = Xibs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -131,6 +155,7 @@
 			files = (
 				1687088620B6687000D422B2 /* LaunchScreen.storyboard in Resources */,
 				1687088320B6687000D422B2 /* Assets.xcassets in Resources */,
+				1687089520B6949700D422B2 /* ViewA.xib in Resources */,
 				1687088120B6687000D422B2 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -142,6 +167,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1687089220B66D1900D422B2 /* XibProcessor.m in Sources */,
 				1687087E20B6687000D422B2 /* ViewController.m in Sources */,
 				1687088920B6687000D422B2 /* main.m in Sources */,
 				1687087B20B6687000D422B2 /* AppDelegate.m in Sources */,
