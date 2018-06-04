@@ -12,6 +12,10 @@ public class XibProcessor: NSObject {
     private var _data: Data
     private var _filename: String
     private var _output: String
+    private lazy var xmlTmpPath: String = {
+        let path = Bundle.main.bundlePath
+        return path + "/tmpXML"
+    }()
     
     public var input: String {
         get {
@@ -37,8 +41,12 @@ public class XibProcessor: NSObject {
     
     // MARK: - Private Methods
     private func getDictionaryFromXib() {
-//        let xmlTmpPath = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent("tmp.xml").absoluteString
-        let xmlTmpPath = "/Users/zn/Desktop/xxml"
+        let fileMgr = FileManager.default
+        
+        if fileMgr.fileExists(atPath: xmlTmpPath) {
+            try? fileMgr.removeItem(atPath: xmlTmpPath)
+        }
+        
         let p = Process()
         p.launchPath = "/usr/bin/env"
         p.arguments = ["ibtool", _filename, "--write", xmlTmpPath]; //"--objects", "--hierarchy"
@@ -49,7 +57,6 @@ public class XibProcessor: NSObject {
             let status = p.terminationStatus
             if status == 0 {
                 // task succeeded.
-                let fileMgr = FileManager.default
                 if fileMgr.fileExists(atPath: xmlTmpPath) {
                     _data = fileMgr.contents(atPath: xmlTmpPath)!
                     let text = inputAsText()
