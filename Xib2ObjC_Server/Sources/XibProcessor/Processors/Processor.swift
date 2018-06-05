@@ -44,7 +44,9 @@ extension Processor {
         output["constructor"] = constructorString(indexer: indexer)
         
         if let userLbl = indexer.element!.attribute(by: "userLabel")?.text {
-            output["userLabel"] = userLbl
+            output["instanceName"] = userLbl
+        } else {
+            output["instanceName"] = indexer.element!.name + indexer.element!.idString
         }
         
         indexer.element!.allAttributes.forEach { (_, value) in

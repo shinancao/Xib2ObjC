@@ -71,11 +71,11 @@ public class XibProcessor: NSObject {
     }
     
     private func enumerate(_ indexer: XMLIndexer) {
-        let identifier = indexer.element!.attribute(by: "id")!.text.replacingOccurrences(of: "-", with: "").lowercased()
         
         let processor = Processor.processor(elementName: indexer.element!.name)
         if let processor = processor {
             let obj = processor.process(indexer: indexer)
+            let identifier = indexer.element!.idString
             _objects[identifier] = obj
         }
         
@@ -84,8 +84,6 @@ public class XibProcessor: NSObject {
             let subviews = subviewsIndexer.children
             subviews.forEach{indexer in enumerate(indexer)}
         }
-        
-        print("_objects: \(_objects)")
     }
     
     // MARK: - Public Methods
@@ -94,13 +92,26 @@ public class XibProcessor: NSObject {
             return
         }
         
+        // get all objects
         let root = xml["document"]["objects"]["view"]
         enumerate(root)
-    }
-    
-    public func inputAsDictionary() -> [String: Any] {
-        let propertyList = try! PropertyListSerialization.propertyList(from: _data, options: [], format: nil) as! [String: Any]
-        return propertyList
+        
+        //construct output string
+        for (_, object) in _objects.reversed() {
+            
+            let instanceName = object["instanceName"]!
+            let klass = object["class"]!
+            let constructor = object["constructor"]!
+            _output.append("\(klass) *\(instanceName) = \(constructor);\n")
+            
+            object.filter{(key, _) in !["instanceName", "class", "constructor"].contains(key)}.forEach({ (key, value) in
+                _output.append("\(instanceName).\(key) = \(value);\n")
+            })
+            
+            _output.append("\n")
+        }
+        
+        print(_output)
     }
     
     public func inputAsText() -> String {
