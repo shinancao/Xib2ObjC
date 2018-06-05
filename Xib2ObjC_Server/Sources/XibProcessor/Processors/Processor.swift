@@ -6,43 +6,54 @@
 //
 
 import Foundation
+import SWXMLHash
 
 class Processor: NSObject {
-    var input = [String: Any]() //存储该processor从xib读取到的[key:value]
-    var output = [String: Any]() //存储根据input构造的输出字符串
+    var output = [String: String]() 
     
-    func process(key: String, value: Any) {}
-    func getProcessedClassName() -> String { return "" }
-    func constructorString() -> String {
-        return "[[\(getProcessedClassName()) alloc] init]"
+    func process(attrName: String, attrText: String) {}
+    
+    func process(childElem: SWXMLHash.XMLElement) {}
+    
+    func constructorString(indexer: XMLIndexer) -> String {
+        return "[[\(indexer.element!.classNameString) alloc] init]"
     }
 }
 
 extension Processor {
-    class func processor(for klass: String) -> Processor? {
-        var processor: Processor? = nil
-        if klass == "IBUIView" {
-            processor = UIViewProcessor()
-        } else if klass == "IBUILabel" {
-            processor = UILabelProcessor()
-        } else if klass == "IBUIButton" {
-            processor = UIButtonProcessor()
-        } else if klass == "IBUIImageView" {
-            processor = UIImageViewProcessor()
+    class func processor(elementName: String) -> Processor? {
+        switch elementName {
+        case "view":
+            return UIViewProcessor()
+        case "label":
+            return UILabelProcessor()
+        case "imageView":
+            return UIImageViewProcessor()
+        case "button":
+            return UIButtonProcessor()
+        default:
+            return nil
         }
-        
-        return processor
     }
     
-    func process(object: [String: Any]) -> [String: Any] {
-        input = object
+    func process(indexer: XMLIndexer) -> [String: String] {
         output.removeAll()
         
-        for (key, value) in input {
-            process(key: key, value: value)
+        output["class"] = indexer.element!.classNameString
+        
+        output["constructor"] = constructorString(indexer: indexer)
+        
+        if let userLbl = indexer.element!.attribute(by: "userLabel")?.text {
+            output["userLabel"] = userLbl
         }
         
-        output["constructor"] = constructorString()
+        indexer.element!.allAttributes.forEach { (_, value) in
+            process(attrName: value.name, attrText: value.text)
+        }
+        
+        indexer.children.forEach { (child) in
+            process(childElem: child.element!)
+        }
         
         return output
     }

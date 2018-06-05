@@ -8,11 +8,5 @@
 import Foundation
 
 class UILabelProcessor: UIViewProcessor {
-    override func getProcessedClassName() -> String {
-        return "UILabel"
-    }
-    
-    override func process(key: String, value: Any) {
-        
-    }
+   
 }

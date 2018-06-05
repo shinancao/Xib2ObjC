@@ -6,21 +6,36 @@
 //
 
 import Foundation
+import SWXMLHash
 
 class UIViewProcessor: Processor {
-    override func getProcessedClassName() -> String {
-        return "UIView"
+    override func constructorString(indexer: XMLIndexer) -> String {
+        let rectElem = indexer["rect"].element!
+        return "[[\(indexer.element!.classNameString) alloc] initWithRect:\(rectElem.rectString)]"
     }
     
-    override func constructorString() -> String {
-        return "[[\(getProcessedClassName()) alloc] initWithFrame:CGRect]"
+    override func process(attrName: String, attrText: String) {
+        var object: String?
+        if attrName == "contentMode" {
+            object = attrText.contentModeString
+        }
+        
+        if let obj = object {
+            output[attrName] = obj
+        }
     }
     
-    override func process(key: String, value: Any) {
-        // Subclasses can override this method for their own properties.
-        // In those cases, call ;
-        // to be sure that mother classes do their work too.
+    override func process(childElem: SWXMLHash.XMLElement) {
+        let name = childElem.name
+        let attrName = childElem.attribute(by: "key")?.text ?? "unknowAttr"
+        var object: String?
         
+        if name == "color" {
+            object = childElem.colorString
+        }
         
+        if let obj = object {
+            output[attrName] = obj
+        }
     }
 }

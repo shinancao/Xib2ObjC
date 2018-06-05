@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import SWXMLHash
 
 public class XibProcessor: NSObject {
-    private var _dictionary: [String: Any]
+    private var _xml: XMLIndexer?
     private var _data: Data
     private var _filename: String
     private var _output: String
+    private var _objects: [String: [String: String]]
     private lazy var xmlTmpPath: String = {
         let path = Bundle.main.bundlePath
         return path + "/tmpXML"
@@ -33,10 +35,10 @@ public class XibProcessor: NSObject {
     }
     
     override public init() {
-        _dictionary = [String: Any]()
         _data = Data()
         _filename = ""
         _output = ""
+        _objects = [String: [String: String]]()
     }
     
     // MARK: - Private Methods
@@ -60,7 +62,7 @@ public class XibProcessor: NSObject {
                 if fileMgr.fileExists(atPath: xmlTmpPath) {
                     _data = fileMgr.contents(atPath: xmlTmpPath)!
                     let text = inputAsText()
-                    print(text)
+                    _xml = SWXMLHash.parse(text)
                 }
             } else {
                 // task failed.
@@ -68,13 +70,32 @@ public class XibProcessor: NSObject {
         }
     }
     
+    private func enumerate(_ indexer: XMLIndexer) {
+        let identifier = indexer.element!.attribute(by: "id")!.text.replacingOccurrences(of: "-", with: "").lowercased()
+        
+        let processor = Processor.processor(elementName: indexer.element!.name)
+        if let processor = processor {
+            let obj = processor.process(indexer: indexer)
+            _objects[identifier] = obj
+        }
+        
+        let subviewsIndexer = indexer["subviews"]
+        if (subviewsIndexer.element != nil) {
+            let subviews = subviewsIndexer.children
+            subviews.forEach{indexer in enumerate(indexer)}
+        }
+        
+        print("_objects: \(_objects)")
+    }
+    
     // MARK: - Public Methods
     public func process() {
-//        let xibObjects = _dictionary["com.apple.ibtool.document.objects"] as! [String: Any]
-//        for (key, value) in xibObjects {
-//            print("key: "+key)
-//        }
+        guard let xml = _xml else {
+            return
+        }
         
+        let root = xml["document"]["objects"]["view"]
+        enumerate(root)
     }
     
     public func inputAsDictionary() -> [String: Any] {
