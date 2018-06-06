@@ -7,6 +7,6 @@
 
 import Foundation
 
-class UIButtonProcessor: UIViewProcessor {
+class UIButtonProcessor: UIControlProcessor {
     
 }

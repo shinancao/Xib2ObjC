@@ -42,6 +42,15 @@ extension String {
     var imageString: String {
         return "[UIImage imageNamed:@\"\(self)\"]"
     }
+    
+    var contentVerticalAlignmentString: String {
+        return "UIControlContentVerticalAlignment" + capitalized
+    }
+    
+    var contentHorizontalAlignmentString: String {
+        return "UIControlContentHorizontalAlignment" + capitalized
+    }
+    
 }
 
 
