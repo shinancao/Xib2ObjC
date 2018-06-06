@@ -45,18 +45,11 @@ extension String {
         return "UIViewContentMode" + self.capitalizingFirstLetter()
     }
     
-    
-
-}
-
-extension String {
-    func capitalizingFirstLetter() -> String {
-        return prefix(1).uppercased() + dropFirst()
+    var alphaString: String {
+        let double = Double(self)!
+        return String(double.roundTo(places: 2))
     }
-    
-    mutating func capitalizingFirstLetter() {
-        self = self.capitalizingFirstLetter()
-    }
+
 }
 
 

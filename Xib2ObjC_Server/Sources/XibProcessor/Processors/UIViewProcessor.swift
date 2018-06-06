@@ -16,8 +16,30 @@ class UIViewProcessor: Processor {
     
     override func process(attrName: String, attrText: String) {
         var object: String?
+        var attrName = attrName
         if attrName == "contentMode" {
             object = attrText.contentModeString
+        } else if attrName == "translatesAutoresizingMaskIntoConstraints" {
+            object = attrText
+        } else if attrName == "hidden" {
+            object = attrText
+        } else if attrName == "opaque" {
+            object = attrText
+        } else if attrName == "clipsSubviews" {
+            object = attrText
+            attrName = "clipsToBounds"
+        } else if attrName == "userInteractionEnabled" {
+            object = attrText
+        } else if attrName == "tag" {
+            object = attrText
+        } else if attrName == "multipleTouchEnabled" {
+            object = attrText
+        } else if attrName == "clearsContextBeforeDrawing" {
+            object = attrText
+        } else if attrName == "alpha" {
+            object = attrText.alphaString
+        } else if attrName == "autoresizesSubviews" {
+            object = attrText
         }
         
         if let obj = object {
@@ -32,6 +54,8 @@ class UIViewProcessor: Processor {
         
         if name == "color" {
             object = childElem.colorString
+        } else if attrName == "autoresizingMask" {
+            //暂时不考虑该属性
         }
         
         if let obj = object {

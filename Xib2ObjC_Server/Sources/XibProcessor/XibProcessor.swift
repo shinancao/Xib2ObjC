@@ -14,6 +14,7 @@ public class XibProcessor: NSObject {
     private var _filename: String
     private var _output: String
     private var _objects: [String: [String: String]]
+    private var _hierarchys: [String: [String]]
     private lazy var xmlTmpPath: String = {
         let path = Bundle.main.bundlePath
         return path + "/tmpXML"
@@ -39,6 +40,7 @@ public class XibProcessor: NSObject {
         _filename = ""
         _output = ""
         _objects = [String: [String: String]]()
+        _hierarchys = [String: [String]]()
     }
     
     // MARK: - Private Methods
@@ -51,7 +53,7 @@ public class XibProcessor: NSObject {
         
         let p = Process()
         p.launchPath = "/usr/bin/env"
-        p.arguments = ["ibtool", _filename, "--write", xmlTmpPath]; //"--objects", "--hierarchy"
+        p.arguments = ["ibtool", _filename, "--write", xmlTmpPath];
         p.launch()
         p.waitUntilExit()
         
@@ -70,19 +72,33 @@ public class XibProcessor: NSObject {
         }
     }
     
-    private func enumerate(_ indexer: XMLIndexer) {
+    private func enumerate(_ indexer: XMLIndexer, level: Int) {
         
         let processor = Processor.processor(elementName: indexer.element!.name)
-        if let processor = processor {
-            let obj = processor.process(indexer: indexer)
-            let identifier = indexer.element!.idString
-            _objects[identifier] = obj
+        guard let p = processor else {
+            print("unknown xib object.")
+            return
         }
         
+        var obj = p.process(indexer: indexer)
+        if level == 0 {
+            obj["instanceName"] = "self"
+        }
+        let identifier = indexer.element!.idString
+        _objects[identifier] = obj
+        
+        var subObjs = [String]()
         let subviewsIndexer = indexer["subviews"]
         if (subviewsIndexer.element != nil) {
             let subviews = subviewsIndexer.children
-            subviews.forEach{indexer in enumerate(indexer)}
+            subviews.forEach({ (indexer) in
+                subObjs.append(indexer.element!.idString)
+                enumerate(indexer, level: level+1)
+            })
+        }
+        
+        if subObjs.count > 0 {
+            _hierarchys[identifier] = subObjs
         }
     }
     
@@ -94,21 +110,32 @@ public class XibProcessor: NSObject {
         
         // get all objects
         let root = xml["document"]["objects"]["view"]
-        enumerate(root)
+        enumerate(root, level: 0)
         
         //construct output string
         for (_, object) in _objects.reversed() {
             
             let instanceName = object["instanceName"]!
+            
             let klass = object["class"]!
             let constructor = object["constructor"]!
-            _output.append("\(klass) *\(instanceName) = \(constructor);\n")
+            if instanceName != "self" {
+                _output.append("\(klass) *\(instanceName) = \(constructor);\n")
+            }
             
             object.filter{(key, _) in !["instanceName", "class", "constructor"].contains(key)}.forEach({ (key, value) in
                 _output.append("\(instanceName).\(key) = \(value);\n")
             })
             
             _output.append("\n")
+        }
+        
+        _hierarchys.forEach { (superviewId, subviewsId) in
+            let superInstanceName = _objects[superviewId]!["instanceName"]!
+            subviewsId.forEach({ (subviewId) in
+                let subInstanceName = _objects[subviewId]!["instanceName"]!
+                _output.append("[\(superInstanceName) addSubview:\(subInstanceName)];\n")
+            })
         }
         
         print(_output)
