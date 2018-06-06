@@ -39,6 +39,9 @@ extension String {
         }
     }
 
+    var imageString: String {
+        return "[UIImage imageNamed:@\"\(self)\"]"
+    }
 }
 
 

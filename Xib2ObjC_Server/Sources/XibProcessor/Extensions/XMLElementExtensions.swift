@@ -51,7 +51,7 @@ extension SWXMLHash.XMLElement {
     }
     
     var classNameString: String {
-        return "UI"+name.capitalized
+        return "UI"+name.capitalizingFirstLetter()
     }
 
     var idString: String {
