@@ -12,34 +12,6 @@ extension String {
         let size = NSSizeFromString(self)
         return String(format: "CGSizeMake(%1.1f, %1.1f)", size.width, size.height)
     }
-
-    func colorString() -> String {
-        if hasPrefix("NSCustomColorSpace : NSColorSpaceModelRGB:") {
-            //<string>NSCustomColorSpace : NSColorSpaceModelRGB: R:0.937 G:0.561 B:0.153 A:1</string>
-            let start = self.index(after: "NSCustomColorSpace : NSColorSpaceModelRGB: ".endIndex)
-            let end = self.endIndex
-            let range = start ..< end
-            let subString = self[range]
-            let array = subString.components(separatedBy: " ")
-
-            var color: [Float] = []
-            array.forEach({ (string) in
-                let scanner = Scanner(string: string)
-                var val: Float = 0.0
-                scanner.scanFloat(&val)
-                color.append(val)
-            })
-
-            return String(format: "[UIColor colorWithRed:%1.3f green:%1.3f blue:%1.3f alpha:%1.3f]", color[0], color[1], color[2], color[3])
-
-        } else {
-            return self
-        }
-    }
-
-    func quotedAsCodeString() -> String {
-        return "\"\(self)\""
-    }
     
     var contentModeString: String {
         return "UIViewContentMode" + self.capitalizingFirstLetter()
@@ -48,6 +20,23 @@ extension String {
     var alphaString: String {
         let double = Double(self)!
         return String(double.roundTo(places: 2))
+    }
+    
+    var quoteAsCodeString: String {
+        return "@\"\(self)\""
+    }
+    
+    var textAlignmentString: String {
+        return "NSTextAlignment" + capitalized
+    }
+    
+    var lineBreakModeString: String {
+        if range(of: "Truncation") != nil {
+            let mode = prefix(self.count - "Truncation".count)
+            return "NSLineBreakBy" + "Truncating" + mode.capitalized
+        } else {
+            return "NSLineBreakBy" + self.capitalizingFirstLetter() + "ing"
+        }
     }
 
 }

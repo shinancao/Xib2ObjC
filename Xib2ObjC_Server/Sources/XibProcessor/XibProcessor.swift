@@ -47,6 +47,11 @@ public class XibProcessor: NSObject {
     private func getDictionaryFromXib() {
         let fileMgr = FileManager.default
         
+        if !fileMgr.fileExists(atPath: _filename) {
+            print("xib file doesn't exist.")
+            return
+        }
+        
         if fileMgr.fileExists(atPath: xmlTmpPath) {
             try? fileMgr.removeItem(atPath: xmlTmpPath)
         }

@@ -21,7 +21,7 @@ class Processor: NSObject {
 }
 
 extension Processor {
-    class func processor(elementName: String) -> Processor? {
+    final class func processor(elementName: String) -> Processor? {
         switch elementName {
         case "view":
             return UIViewProcessor()
@@ -36,7 +36,7 @@ extension Processor {
         }
     }
     
-    func process(indexer: XMLIndexer) -> [String: String] {
+    final func process(indexer: XMLIndexer) -> [String: String] {
         output.removeAll()
         
         output["class"] = indexer.element!.classNameString

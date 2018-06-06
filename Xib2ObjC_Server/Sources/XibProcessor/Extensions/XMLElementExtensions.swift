@@ -57,4 +57,25 @@ extension SWXMLHash.XMLElement {
     var idString: String {
         return attribute(by: "id")!.text.replacingOccurrences(of: "-", with: "").lowercased()
     }
+    
+    var fontString: String {
+        let pointSize = attribute(by: "pointSize")!.text
+        if attribute(by: "type")?.text == "system" {
+            return "[UIFont systemFontOfSize:\(pointSize)]"
+        } else {
+            let name = attribute(by: "name")?.text
+            let family = attribute(by: "family")?.text
+            if name != nil && family != nil {
+                return "[UIFont fontWithName:@\"\(name!)\" size:\(pointSize)]"
+            } else {
+                return "unknow font"
+            }
+        }
+    }
+    
+    var sizeString: String {
+        let width = attribute(by: "width")!.text
+        let height = attribute(by: "height")!.text
+        return "CGSizeMake(\(width), \(height))"
+    }
 }
