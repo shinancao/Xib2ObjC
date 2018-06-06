@@ -11,7 +11,7 @@ import SWXMLHash
 class UIViewProcessor: Processor {
     override func constructorString(indexer: XMLIndexer) -> String {
         let rectElem = indexer["rect"].element!
-        return "[[\(indexer.element!.classNameString) alloc] initWithRect:\(rectElem.rectString)]"
+        return "[[\(indexer.element!.classNameString) alloc] initWithFrame:\(rectElem.rectString)]"
     }
     
     override func process(attrName: String, attrText: String) {

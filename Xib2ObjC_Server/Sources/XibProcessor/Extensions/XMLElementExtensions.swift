@@ -32,7 +32,7 @@ extension SWXMLHash.XMLElement {
                 let WA = spaceValue(["white", "alpha"])
                 return "[UIColor colorWithWhite:\(WA["white"]!) alpha:\(WA["alpha"]!)]"
                 
-            } else if colorSpace == "sRGB" || colorSpace == "calibratedRGB" {
+            } else if colorSpace == "custom" || colorSpace == "calibratedRGB" {
                 let RGBA = spaceValue(["red", "green", "blue", "alpha"])
                 return "[UIColor colorWithRed:\(RGBA["red"]!) green:\(RGBA["green"]!) blue:\(RGBA["blue"]!) alpha:\(RGBA["alpha"]!)]"
             } else {
