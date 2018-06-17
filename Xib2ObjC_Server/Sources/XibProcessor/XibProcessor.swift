@@ -128,8 +128,12 @@ public class XibProcessor: NSObject {
                 _output.append("\(klass) *\(instanceName) = \(constructor);\n")
             }
             
-            object.filter{(key, _) in !["instanceName", "class", "constructor"].contains(key)}.forEach({ (key, value) in
+            object.sorted(by: {$0.0 < $1.0}).filter{(key, _) in !["instanceName", "class", "constructor"].contains(key) && !key.hasPrefix("__method__") }.forEach({ (key, value) in
                 _output.append("\(instanceName).\(key) = \(value);\n")
+            })
+            
+            object.sorted(by: {$0.0 < $1.0}).filter{(key, _) in key.hasPrefix("__method__")}.forEach({ (_, value) in
+                _output.append("[\(instanceName) \(value)];\n")
             })
             
             _output.append("\n")
