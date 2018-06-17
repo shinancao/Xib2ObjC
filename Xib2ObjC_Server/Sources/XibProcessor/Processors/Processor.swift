@@ -31,6 +31,8 @@ extension Processor {
             return UIImageViewProcessor()
         case "button":
             return UIButtonProcessor()
+        case "pageControl":
+            return UIPageControlProcessor()
         default:
             return nil
         }
