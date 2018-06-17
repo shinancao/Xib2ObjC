@@ -51,6 +51,10 @@ extension String {
         return "UIControlContentHorizontalAlignment" + capitalized
     }
     
+    var buttonStateString: String {
+        return "UIControlState" + capitalized
+    }
+    
 }
 
 

@@ -78,4 +78,17 @@ extension SWXMLHash.XMLElement {
         let height = attribute(by: "height")!.text
         return "CGSizeMake(\(width), \(height))"
     }
+    
+    var buttonTypeString: String {
+        let buttonType = attribute(by: "buttonType")?.text
+        if let buttonType = buttonType {
+            if buttonType == "roundedRect" {
+                return "UIButtonTypeSystem"
+            } else {
+                return "UIButtonType" + buttonType.capitalizingFirstLetter()
+            }
+        } else {
+            return "UIButtonTypeCustom"
+        }
+    }
 }
