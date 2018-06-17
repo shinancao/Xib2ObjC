@@ -55,6 +55,13 @@ extension String {
         return "UIControlState" + capitalized
     }
     
+    var indicatorStyleString: String {
+        return "UIScrollViewIndicatorStyle" + capitalized
+    }
+    
+    var keyboardDismissModeString: String {
+        return "UIScrollViewKeyboardDismissMode" + self.capitalizingFirstLetter()
+    }
 }
 
 

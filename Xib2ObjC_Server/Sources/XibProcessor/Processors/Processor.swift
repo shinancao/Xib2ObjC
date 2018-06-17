@@ -33,6 +33,8 @@ extension Processor {
             return UIButtonProcessor()
         case "pageControl":
             return UIPageControlProcessor()
+        case "scrollView":
+            return UIScrollViewProcessor()
         default:
             return nil
         }
