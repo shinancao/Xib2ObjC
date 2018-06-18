@@ -62,6 +62,50 @@ extension String {
     var keyboardDismissModeString: String {
         return "UIScrollViewKeyboardDismissMode" + self.capitalizingFirstLetter()
     }
+    
+    var borderStyleString: String {
+        return "UITextBorderStyle" + self.capitalizingFirstLetter()
+    }
+    
+    var clearButtonModeString: String {
+        return "UITextFieldViewMode" + self.capitalizingFirstLetter()
+    }
+    
+    var autocapitalizationTypeString:String {
+        return "UITextAutocapitalizationType" + self.capitalizingFirstLetter()
+    }
+    
+    var autocorrectionTypeString: String {
+        return "UITextAutocorrectionType" + capitalized
+    }
+    
+    var spellCheckingTypeString: String {
+        return "UITextSpellCheckingType" + capitalized
+    }
+    
+    var keyboardTypeString: String {
+        return "UIKeyboardType" + self.capitalizingFirstLetter()
+    }
+    
+    var keyboardAppearanceString: String {
+        return "UIKeyboardAppearance" + capitalized
+    }
+    
+    var returnKeyTypeString: String {
+        return "UIReturnKey" + self.capitalizingFirstLetter()
+    }
+    
+    var smartDashesTypeString: String {
+        return "UITextSmartDashesType" + capitalized
+    }
+    
+    var smartInsertDeleteTypeString: String {
+        return "UITextSmartInsertDeleteType" + capitalized
+    }
+    
+    var smartQuotesTypeString: String {
+        return "UITextSmartQuotesType" + capitalized
+    }
 }
 
 

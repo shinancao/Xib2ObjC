@@ -39,6 +39,8 @@ extension Processor {
             return UISwitchProcessor()
         case "tableView":
             return UITableViewProcessor()
+        case "textField":
+            return UITextFieldProcessor()
         default:
             return nil
         }
