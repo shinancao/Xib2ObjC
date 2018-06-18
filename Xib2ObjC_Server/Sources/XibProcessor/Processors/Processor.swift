@@ -41,6 +41,8 @@ extension Processor {
             return UITableViewProcessor()
         case "textField":
             return UITextFieldProcessor()
+        case "textView":
+            return UITextViewProcessor()
         default:
             return nil
         }
