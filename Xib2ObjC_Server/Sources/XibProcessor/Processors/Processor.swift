@@ -37,6 +37,8 @@ extension Processor {
             return UIScrollViewProcessor()
         case "switch":
             return UISwitchProcessor()
+        case "tableView":
+            return UITableViewProcessor()
         default:
             return nil
         }

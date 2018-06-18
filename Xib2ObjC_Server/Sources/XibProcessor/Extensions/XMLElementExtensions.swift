@@ -91,4 +91,9 @@ extension SWXMLHash.XMLElement {
             return "UIButtonTypeCustom"
         }
     }
+    
+    var tableViewStyleString: String {
+        let style = attribute(by: "style")!.text
+        return "UITableViewStyle" + style.capitalized
+    }
 }
