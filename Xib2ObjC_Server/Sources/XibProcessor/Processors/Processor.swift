@@ -35,6 +35,8 @@ extension Processor {
             return UIPageControlProcessor()
         case "scrollView":
             return UIScrollViewProcessor()
+        case "switch":
+            return UISwitchProcessor()
         default:
             return nil
         }
