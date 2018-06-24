@@ -91,21 +91,23 @@ public class XibProcessor: NSObject {
         if level == 0 {
             obj["instanceName"] = "self"
         }
-        let identifier = indexer.element!.idString
-        _objects[identifier] = obj
         
-        var subObjs = [String]()
+        var identifier = indexer.element!.idString
         var subviewsIndexer = indexer["subviews"]
         var constraintsIndexer = indexer["constraints"]
         if indexer.element!.name == "tableViewCell" {
             subviewsIndexer = indexer["tableViewCellContentView"]["subviews"]
             constraintsIndexer = indexer["tableViewCellContentView"]["constraints"]
+            identifier = indexer["tableViewCellContentView"].element!.idString
         }
+        
+        _objects[identifier] = obj
         
         if constraintsIndexer.element != nil {
             _constraints[identifier] = constraintsIndexer.children
         }
-    
+        
+        var subObjs = [String]()
         if (subviewsIndexer.element != nil) {
             let subviews = subviewsIndexer.children
             subviews.forEach({ (indexer) in

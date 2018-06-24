@@ -1,5 +1,5 @@
 import XibProcessor
 
 let processor = XibProcessor()
-processor.input = "/Users/Shinancao/Documents/workplace/TestXIB/TestXIB/ViewB.xib"
+processor.input = "/Users/Shinancao/Documents/workplace/TestXIB/TestXIB/ViewA.xib"
 processor.process()
