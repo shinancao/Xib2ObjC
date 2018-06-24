@@ -106,6 +106,10 @@ extension String {
     var smartQuotesTypeString: String {
         return "UITextSmartQuotesType" + capitalized
     }
+    
+    var tableViewCellSelectionStyleString: String {
+        return "UITableViewCellSelectionStyle" + capitalized
+    }
 }
 
 

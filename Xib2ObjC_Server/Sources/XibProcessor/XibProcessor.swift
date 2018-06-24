@@ -93,7 +93,11 @@ public class XibProcessor: NSObject {
         _objects[identifier] = obj
         
         var subObjs = [String]()
-        let subviewsIndexer = indexer["subviews"]
+        var subviewsIndexer = indexer["subviews"]
+        if indexer.element!.name == "tableViewCell" {
+            subviewsIndexer = indexer["tableViewCellContentView"]["subviews"]
+        }
+    
         if (subviewsIndexer.element != nil) {
             let subviews = subviewsIndexer.children
             subviews.forEach({ (indexer) in
@@ -114,7 +118,8 @@ public class XibProcessor: NSObject {
         }
         
         // get all objects
-        let root = xml["document"]["objects"]["view"]
+        let root = xml["document"]["objects"].filterChildren { _, index in index > 1 }.children[0]
+        
         enumerate(root, level: 0)
         
         //construct output string
@@ -140,10 +145,13 @@ public class XibProcessor: NSObject {
         }
         
         _hierarchys.forEach { (superviewId, subviewsId) in
-            let superInstanceName = _objects[superviewId]!["instanceName"]!
+            var superView = _objects[superviewId]!["instanceName"]!
+            if _objects[superviewId]!["class"] == "UITableViewCell" {
+                superView = superView + ".contentView"
+            }
             subviewsId.forEach({ (subviewId) in
                 let subInstanceName = _objects[subviewId]!["instanceName"]!
-                _output.append("[\(superInstanceName) addSubview:\(subInstanceName)];\n")
+                _output.append("[\(superView) addSubview:\(subInstanceName)];\n")
             })
         }
         
