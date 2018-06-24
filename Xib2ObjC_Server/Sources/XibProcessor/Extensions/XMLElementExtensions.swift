@@ -96,4 +96,38 @@ extension SWXMLHash.XMLElement {
         let style = attribute(by: "style")!.text
         return "UITableViewStyle" + style.capitalized
     }
+    
+    //约束相关
+    var firstItemIdString: String {
+        if let firstItem = attribute(by: "firstItem") {
+            return firstItem.text.replacingOccurrences(of: "-", with: "").lowercased()
+        } else {
+            return ""
+        }
+    }
+    
+    var firstAttributeString: String {
+        return attribute(by: "firstAttribute")!.text
+    }
+    
+    var secondItemIdString: String {
+        if let firstItem = attribute(by: "secondItem") {
+            return firstItem.text.replacingOccurrences(of: "-", with: "").lowercased()
+        } else {
+            return ""
+        }
+    }
+    
+    var secondAttributeString: String {
+        return attribute(by: "secondAttribute")!.text
+    }
+    
+    var constantString: String {
+        if let constant = attribute(by: "constant") {
+            return constant.text
+        } else {
+            return ""
+        }
+    }
+    
 }

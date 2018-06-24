@@ -15,6 +15,7 @@ public class XibProcessor: NSObject {
     private var _output: String
     private var _objects: [String: [String: String]]
     private var _hierarchys: [String: [String]]
+    private var _constraints: [String: [XMLIndexer]]
     private lazy var xmlTmpPath: String = {
         let path = Bundle.main.bundlePath
         return path + "/tmpXML"
@@ -41,6 +42,7 @@ public class XibProcessor: NSObject {
         _output = ""
         _objects = [String: [String: String]]()
         _hierarchys = [String: [String]]()
+        _constraints = [String: [XMLIndexer]]()
     }
     
     // MARK: - Private Methods
@@ -94,8 +96,14 @@ public class XibProcessor: NSObject {
         
         var subObjs = [String]()
         var subviewsIndexer = indexer["subviews"]
+        var constraintsIndexer = indexer["constraints"]
         if indexer.element!.name == "tableViewCell" {
             subviewsIndexer = indexer["tableViewCellContentView"]["subviews"]
+            constraintsIndexer = indexer["tableViewCellContentView"]["constraints"]
+        }
+        
+        if constraintsIndexer.element != nil {
+            _constraints[identifier] = constraintsIndexer.children
         }
     
         if (subviewsIndexer.element != nil) {
@@ -152,6 +160,63 @@ public class XibProcessor: NSObject {
             subviewsId.forEach({ (subviewId) in
                 let subInstanceName = _objects[subviewId]!["instanceName"]!
                 _output.append("[\(superView) addSubview:\(subInstanceName)];\n")
+            })
+        }
+        
+        _output.append("\n")
+        
+        _hierarchys.forEach { (superviewId, subviewsId) in
+            let superConstraints = _constraints[superviewId] ?? []
+            
+            subviewsId.forEach({ (subviewId) in
+                var allMasonryConstraints = [String]() //放与该view相关的constraints
+               
+                let subInstanceName = _objects[subviewId]!["instanceName"]!
+               
+                let subConstraints = _constraints[subviewId] ?? []
+               
+                subConstraints.filter{ indexer in
+                    indexer.element!.firstItemIdString == "" && indexer.element!.secondItemIdString == ""
+                }.forEach({ (indexer) in
+                    let constraint = "make.\(indexer.element!.firstAttributeString).mas_equalTo(\(indexer.element!.constantString))"
+                    allMasonryConstraints.append(constraint)
+                })
+                
+                superConstraints.filter{ indexer in indexer.element!.firstItemIdString == subviewId }.forEach({ (indexer) in
+                    let secondItem = indexer.element!.secondItemIdString
+                    var secondInstanceName = _objects[secondItem]!["instanceName"]!
+                    if _objects[secondItem]!["class"] == "UITableViewCell" {
+                        secondInstanceName = secondInstanceName + ".contentView"
+                    }
+
+                    var constraint = "make.\(indexer.element!.firstAttributeString).equalTo(\(secondInstanceName).mas_\(indexer.element!.secondAttributeString))"
+                    let constant = indexer.element!.constantString
+                    if constant != "" {
+                        constraint = constraint + ".offset(\(constant))"
+                    }
+                    allMasonryConstraints.append(constraint)
+                })
+                
+                var superInstanceName = _objects[superviewId]!["instanceName"]!
+                if _objects[superviewId]!["class"] == "UITableViewCell" {
+                    superInstanceName = superInstanceName + ".contentView"
+                }
+                superConstraints.filter{ indexer in indexer.element!.firstItemIdString == "" && indexer.element!.secondItemIdString == subviewId }.forEach({ (indexer) in
+                    var constraint = "make.\(indexer.element!.secondAttributeString).equalTo(\(superInstanceName).mas_\(indexer.element!.firstAttributeString))"
+                    let constant = indexer.element!.constantString
+                    if constant != "" {
+                        constraint = constraint + ".offset(-\(constant))"
+                    }
+                    allMasonryConstraints.append(constraint)
+                })
+                
+                if allMasonryConstraints.count > 0 {
+                    _output.append("[\(subInstanceName) mas_makeConstraints:^(MASConstraintMaker *make) {\n")
+                    allMasonryConstraints.forEach({ (constraint) in
+                        _output.append(constraint + ";\n")
+                    })
+                    _output.append("}];\n\n")
+                }
             })
         }
         
