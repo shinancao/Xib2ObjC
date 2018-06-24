@@ -13,17 +13,33 @@ class UILabelProcessor: UIViewProcessor {
         if attrName == "text" {
             output[attrName] = attrText.quoteAsCodeString
         } else if attrName == "textAlignment" {
-            output[attrName] = attrText.textAlignmentString
+            if attrText != "natural" {
+                output[attrName] = attrText.textAlignmentString
+            }
         } else if attrName == "lineBreakMode" {
-            output[attrName] = attrText.lineBreakModeString
+            if attrText != "tailTruncation" {
+                output[attrName] = attrText.lineBreakModeString
+            }
         } else if attrName == "highlighted" {
             output[attrName] = attrText
         } else if attrName == "adjustsFontSizeToFit" {
-            output["adjustsFontSizeToFitWidth"] = attrText
+            if attrText != "NO" {
+                output["adjustsFontSizeToFitWidth"] = attrText
+            }
         } else if attrName == "enabled" {
             output[attrName] = attrText
         } else {
             super.process(attrName: attrName, attrText: attrText)
+        }
+        
+        if attrName == "opaque" {
+            if attrText == "NO" {
+                output.removeValue(forKey: attrName)
+            }
+        } else if attrName == "contentMode" {
+            if attrText == "left" {
+                output.removeValue(forKey: attrName)
+            }
         }
     }
     

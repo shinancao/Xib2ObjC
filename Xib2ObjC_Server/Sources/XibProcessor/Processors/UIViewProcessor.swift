@@ -18,9 +18,13 @@ class UIViewProcessor: Processor {
         var object: String?
         var attrName = attrName
         if attrName == "contentMode" {
-            object = attrText.contentModeString
+            if attrText != "scaleToFill" {
+                object = attrText.contentModeString
+            }
         } else if attrName == "translatesAutoresizingMaskIntoConstraints" {
-            object = attrText
+            if attrText != "NO" {
+                object = attrText
+            }
         } else if attrName == "hidden" {
             object = attrText
         } else if attrName == "opaque" {
@@ -29,7 +33,9 @@ class UIViewProcessor: Processor {
             object = attrText
             attrName = "clipsToBounds"
         } else if attrName == "userInteractionEnabled" {
-            object = attrText
+            if attrText != "NO" {
+                object = attrText
+            }
         } else if attrName == "tag" {
             object = attrText
         } else if attrName == "multipleTouchEnabled" {
