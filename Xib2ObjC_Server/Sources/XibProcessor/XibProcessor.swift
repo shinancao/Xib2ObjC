@@ -191,7 +191,7 @@ public class XibProcessor: NSObject {
                         secondInstanceName = secondInstanceName + ".contentView"
                     }
 
-                    var constraint = "make.\(indexer.element!.firstAttributeString).equalTo(\(secondInstanceName).mas_\(indexer.element!.secondAttributeString))"
+                    var constraint = "make.\(indexer.element!.firstAttributeString).\(indexer.element!.relationString)(\(secondInstanceName).mas_\(indexer.element!.secondAttributeString))"
                     let constant = indexer.element!.constantString
                     if constant != "" {
                         constraint = constraint + ".offset(\(constant))"
@@ -204,7 +204,7 @@ public class XibProcessor: NSObject {
                     superInstanceName = superInstanceName + ".contentView"
                 }
                 superConstraints.filter{ indexer in indexer.element!.firstItemIdString == "" && indexer.element!.secondItemIdString == subviewId }.forEach({ (indexer) in
-                    var constraint = "make.\(indexer.element!.secondAttributeString).equalTo(\(superInstanceName).mas_\(indexer.element!.firstAttributeString))"
+                    var constraint = "make.\(indexer.element!.secondAttributeString).\(indexer.element!.relationString)(\(superInstanceName).mas_\(indexer.element!.firstAttributeString))"
                     let constant = indexer.element!.constantString
                     if constant != "" {
                         constraint = constraint + ".offset(-\(constant))"

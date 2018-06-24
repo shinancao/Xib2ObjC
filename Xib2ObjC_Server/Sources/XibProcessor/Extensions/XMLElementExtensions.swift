@@ -130,4 +130,11 @@ extension SWXMLHash.XMLElement {
         }
     }
     
+    var relationString: String {
+        if let relation = attribute(by: "relation") {
+            return relation.text + "To"
+        } else {
+            return "equalTo"
+        }
+    }
 }
