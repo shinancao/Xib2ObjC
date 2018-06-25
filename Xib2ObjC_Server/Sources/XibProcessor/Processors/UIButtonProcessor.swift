@@ -19,13 +19,29 @@ class UIButtonProcessor: UIControlProcessor {
         } else if attrName == "adjustsImageWhenDisabled" {
             output[attrName] = attrText
         } else if attrName == "lineBreakMode" {
-            output["titleLabel.lineBreakMode"] = attrText.lineBreakModeString
+            if attrText != "middleTruncation" {
+                output["titleLabel.lineBreakMode"] = attrText.lineBreakModeString
+            }
         } else if attrName == "reversesTitleShadowWhenHighlighted" {
             output[attrName] = attrText
         } else if attrName == "showsTouchWhenHighlighted" {
             output[attrName] = attrText
         } else {
             super.process(attrName: attrName, attrText: attrText)
+        }
+        
+        if attrName == "opaque" {
+            if attrText == "NO" {
+                output.removeValue(forKey: attrName)
+            }
+        } else if attrName == "contentHorizontalAlignment" {
+            if attrText == "center" {
+                output.removeValue(forKey: attrName)
+            }
+        } else if attrName == "contentVerticalAlignment" {
+            if attrName == "center" {
+                output.removeValue(forKey: attrName)
+            }
         }
     }
     
