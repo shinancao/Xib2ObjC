@@ -28,6 +28,8 @@ class UILabelProcessor: UIViewProcessor {
             }
         } else if attrName == "enabled" {
             output[attrName] = attrText
+        } else if attrName == "numberOfLines" {
+            output[attrName] = attrText
         } else {
             super.process(attrName: attrName, attrText: attrText)
         }

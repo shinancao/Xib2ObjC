@@ -20,6 +20,7 @@ public class XibProcessor: NSObject {
         let path = Bundle.main.bundlePath
         return path + "/tmpXML"
     }()
+    private let _cellClassNames = ["UITableViewCell", "UICollectionViewCell"]
     
     public var input: String {
         get {
@@ -99,6 +100,8 @@ public class XibProcessor: NSObject {
             subviewsIndexer = indexer["tableViewCellContentView"]["subviews"]
             constraintsIndexer = indexer["tableViewCellContentView"]["constraints"]
             identifier = indexer["tableViewCellContentView"].element!.idString
+        } else if indexer.element!.name == "collectionViewCell" {
+            subviewsIndexer = indexer["view"]["subviews"]
         }
         
         _objects[identifier] = obj
@@ -156,7 +159,7 @@ public class XibProcessor: NSObject {
         
         _hierarchys.forEach { (superviewId, subviewsId) in
             var superView = _objects[superviewId]!["instanceName"]!
-            if _objects[superviewId]!["class"] == "UITableViewCell" {
+            if _cellClassNames.contains(_objects[superviewId]!["class"]!) {
                 superView = superView + ".contentView"
             }
             subviewsId.forEach({ (subviewId) in
@@ -187,7 +190,7 @@ public class XibProcessor: NSObject {
                 superConstraints.filter{ indexer in indexer.element!.firstItemIdString == subviewId }.forEach({ (indexer) in
                     let secondItem = indexer.element!.secondItemIdString
                     var secondInstanceName = _objects[secondItem]!["instanceName"]!
-                    if _objects[secondItem]!["class"] == "UITableViewCell" {
+                    if _cellClassNames.contains(_objects[superviewId]!["class"]!) {
                         secondInstanceName = secondInstanceName + ".contentView"
                     }
 
@@ -200,7 +203,7 @@ public class XibProcessor: NSObject {
                 })
                 
                 var superInstanceName = _objects[superviewId]!["instanceName"]!
-                if _objects[superviewId]!["class"] == "UITableViewCell" {
+                if _cellClassNames.contains(_objects[superviewId]!["class"]!) {
                     superInstanceName = superInstanceName + ".contentView"
                 }
                 superConstraints.filter{ indexer in indexer.element!.firstItemIdString == "" && indexer.element!.secondItemIdString == subviewId }.forEach({ (indexer) in
