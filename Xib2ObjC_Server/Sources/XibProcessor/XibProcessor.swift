@@ -21,6 +21,11 @@ public class XibProcessor: NSObject {
         return path + "/tmpXML"
     }()
     private let _cellClassNames = ["UITableViewCell", "UICollectionViewCell"]
+    private var _viewFile: ViewFile
+    private lazy var outputPath: String = {
+        let path = NSSearchPathForDirectoriesInDomains(.desktopDirectory, .userDomainMask, true)[0]
+        return path + "/Xib2ObjC_GeneratedViews"
+    }()
     
     public var input: String {
         get {
@@ -44,6 +49,7 @@ public class XibProcessor: NSObject {
         _objects = [String: [String: String]]()
         _hierarchys = [String: [String]]()
         _constraints = [String: [XMLIndexer]]()
+        _viewFile = ViewFile(name: "", inheritName: "", constructor: "")
     }
     
     // MARK: - Private Methods
@@ -90,6 +96,7 @@ public class XibProcessor: NSObject {
         
         var obj = p.process(indexer: indexer)
         if level == 0 {
+            _viewFile = ViewFile.getViewFile(klass: obj["class"]!, userLabel: obj["instanceName"]!)
             obj["instanceName"] = "self"
         }
         
@@ -143,15 +150,15 @@ public class XibProcessor: NSObject {
             let klass = object["class"]!
             let constructor = object["constructor"]!
             if instanceName != "self" {
-                _output.append("\(klass) *\(instanceName) = \(constructor);\n")
+                _output.append("    \(klass) *\(instanceName) = \(constructor);\n")
             }
             
             object.sorted(by: {$0.0 < $1.0}).filter{(key, _) in !["instanceName", "class", "constructor"].contains(key) && !key.hasPrefix("__method__") }.forEach({ (key, value) in
-                _output.append("\(instanceName).\(key) = \(value);\n")
+                _output.append("    \(instanceName).\(key) = \(value);\n")
             })
             
             object.sorted(by: {$0.0 < $1.0}).filter{(key, _) in key.hasPrefix("__method__")}.forEach({ (_, value) in
-                _output.append("[\(instanceName) \(value)];\n")
+                _output.append("    [\(instanceName) \(value)];\n")
             })
             
             _output.append("\n")
@@ -164,7 +171,7 @@ public class XibProcessor: NSObject {
             }
             subviewsId.forEach({ (subviewId) in
                 let subInstanceName = _objects[subviewId]!["instanceName"]!
-                _output.append("[\(superView) addSubview:\(subInstanceName)];\n")
+                _output.append("    [\(superView) addSubview:\(subInstanceName)];\n")
             })
         }
         
@@ -216,19 +223,63 @@ public class XibProcessor: NSObject {
                 })
                 
                 if allMasonryConstraints.count > 0 {
-                    _output.append("[\(subInstanceName) mas_makeConstraints:^(MASConstraintMaker *make) {\n")
+                    _output.append("    [\(subInstanceName) mas_makeConstraints:^(MASConstraintMaker *make) {\n")
                     allMasonryConstraints.forEach({ (constraint) in
-                        _output.append(constraint + ";\n")
+                        _output.append("        " + constraint + ";\n")
                     })
-                    _output.append("}];\n\n")
+                    _output.append("    }];\n\n")
                 }
             })
         }
         
-        print(_output)
+        generateFiles()
+    }
+    
+    private func generateFiles() {
+        var viewHFileString = viewFileFormatDict["ViewHFileString"]!
+        viewHFileString = viewHFileString.replacingOccurrences(of: "[View-Name]", with: _viewFile.name)
+        viewHFileString = viewHFileString.replacingOccurrences(of: "[Inherit-Name]", with: _viewFile.inheritName)
+        viewHFileString = viewHFileString.replacingOccurrences(of: "[Author]", with: projectInfo.author)
+        viewHFileString = viewHFileString.replacingOccurrences(of: "[Date]", with: projectInfo.dateString)
+        viewHFileString = viewHFileString.replacingOccurrences(of: "[Year]", with: projectInfo.yearString)
+        
+        var viewMFileString = viewFileFormatDict["ViewMFileString"]!
+        viewMFileString = viewMFileString.replacingOccurrences(of: "[View-Name]", with: _viewFile.name)
+        viewMFileString = viewMFileString.replacingOccurrences(of: "[Constructor]", with: _viewFile.constructor)
+        viewMFileString = viewMFileString.replacingOccurrences(of: "[Date]", with: projectInfo.dateString)
+        viewMFileString = viewMFileString.replacingOccurrences(of: "[Year]", with: projectInfo.yearString)
+        viewMFileString = viewMFileString.replacingOccurrences(of: "[Author]", with: projectInfo.author)
+        viewMFileString = viewMFileString.replacingOccurrences(of: "[UI-Layout]", with: _output)
+        
+        let fileMgr = FileManager.default
+        if !fileMgr.fileExists(atPath: outputPath) {
+            do {
+                try fileMgr.createDirectory(atPath: outputPath, withIntermediateDirectories: false, attributes: nil)
+            } catch {
+                print("create directory failed!")
+            }
+        }
+        let headerFilePath = outputPath + "/\(_viewFile.name).h"
+        let mFilePath = outputPath + "/\(_viewFile.name).m"
+        var data = viewHFileString.data(using: String.Encoding.utf8)
+        fileMgr.createFile(atPath: headerFilePath, contents: data, attributes: nil)
+        data = viewMFileString.data(using: String.Encoding.utf8)
+        fileMgr.createFile(atPath: mFilePath, contents: data, attributes: nil)
+        
+        openFile(outputPath)
+        
+        print("headerFilePath:\(headerFilePath)")
+        print("mFilePath:\(mFilePath)")
     }
     
     public func inputAsText() -> String {
         return String(data: _data, encoding: String.Encoding.utf8)!
+    }
+    
+    private func openFile(_ filePath: String) {
+        let process = Process()
+        process.launchPath = "/usr/bin/env"
+        process.arguments = ["open", filePath]
+        process.launch()
     }
 }
