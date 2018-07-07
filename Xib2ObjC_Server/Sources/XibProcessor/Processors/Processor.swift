@@ -55,12 +55,14 @@ extension Processor {
     final func process(indexer: XMLIndexer) -> [String: String] {
         output.removeAll()
         
+        
         output["class"] = indexer.element!.classNameString
         
         output["constructor"] = constructorString(indexer: indexer)
         
         if let userLbl = indexer.element!.attribute(by: "userLabel")?.text {
             output["instanceName"] = userLbl
+            output["property"] = "\(output["class"]!) *\(userLbl)"
         } else {
             output["instanceName"] = indexer.element!.name + indexer.element!.idString
         }

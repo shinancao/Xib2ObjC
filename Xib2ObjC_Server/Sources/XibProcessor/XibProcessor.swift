@@ -235,6 +235,16 @@ public class XibProcessor: NSObject {
         generateFiles()
     }
     
+    private func getProperties() -> String {
+        var propertyString = ""
+        _objects.forEach { (identifier, obj) in
+            if let property = obj["property"] {
+                propertyString += "@property (nonatomic, strong) " + property + ";\n"
+            }
+        }
+        return propertyString
+    }
+    
     private func generateFiles() {
         var viewHFileString = viewFileFormatDict["ViewHFileString"]!
         viewHFileString = viewHFileString.replacingOccurrences(of: "[View-Name]", with: _viewFile.name)
@@ -250,6 +260,7 @@ public class XibProcessor: NSObject {
         viewMFileString = viewMFileString.replacingOccurrences(of: "[Year]", with: projectInfo.yearString)
         viewMFileString = viewMFileString.replacingOccurrences(of: "[Author]", with: projectInfo.author)
         viewMFileString = viewMFileString.replacingOccurrences(of: "[UI-Layout]", with: _output)
+        viewMFileString = viewMFileString.replacingOccurrences(of: "[Property]", with: getProperties())
         
         let fileMgr = FileManager.default
         if !fileMgr.fileExists(atPath: outputPath) {
