@@ -16,7 +16,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "XibProcessor",
-            dependencies: ["SWXMLHash"]),
+            dependencies: ["SWXMLHash", "Rainbow"]),
         .target(
             name: "Xib2ObjC_Server",
             dependencies: ["XibProcessor"])

@@ -21,7 +21,6 @@ public class XibProcessor: NSObject {
         return path + "/tmpXML"
     }()
     private let _cellClassNames = ["UITableViewCell", "UICollectionViewCell"]
-    private var _viewFile: ViewFile
     private lazy var outputPath: String = {
         let path = NSSearchPathForDirectoriesInDomains(.desktopDirectory, .userDomainMask, true)[0]
         return path + "/Xib2ObjC_GeneratedViews"
@@ -33,7 +32,6 @@ public class XibProcessor: NSObject {
         }
         set(newValue) {
             _filename = newValue
-            getDictionaryFromXib()
         }
     }
     public var output: String {
@@ -42,6 +40,8 @@ public class XibProcessor: NSObject {
         }
     }
     
+    public var viewFile: ViewFile
+    
     override public init() {
         _data = Data()
         _filename = ""
@@ -49,16 +49,15 @@ public class XibProcessor: NSObject {
         _objects = [String: [String: String]]()
         _hierarchys = [String: [String]]()
         _constraints = [String: [XMLIndexer]]()
-        _viewFile = ViewFile(name: "", inheritName: "", constructor: "")
+        viewFile = ViewFile(name: "", inheritName: "", constructor: "")
     }
     
     // MARK: - Private Methods
-    private func getDictionaryFromXib() {
+    private func getDictionaryFromXib() throws {
         let fileMgr = FileManager.default
         
         if !fileMgr.fileExists(atPath: _filename) {
-            print("xib file doesn't exist.")
-            return
+            throw Xib2ObjCError.xibFileNotExist("no such file: \(_filename).")
         }
         
         if fileMgr.fileExists(atPath: xmlTmpPath) {
@@ -86,17 +85,16 @@ public class XibProcessor: NSObject {
         }
     }
     
-    private func enumerate(_ indexer: XMLIndexer, level: Int) {
+    private func enumerate(_ indexer: XMLIndexer, level: Int) throws {
         
         let processor = Processor.processor(elementName: indexer.element!.name)
         guard let p = processor else {
-            print("unknown xib object.")
-            return
+            throw Xib2ObjCError.unknownXibObject("can't parse xib object: \(indexer.element!.name).")
         }
         
         var obj = p.process(indexer: indexer)
         if level == 0 {
-            _viewFile = ViewFile.getViewFile(klass: obj["class"]!, xibPath: _filename)
+            viewFile = ViewFile.getViewFile(klass: obj["class"]!, xibPath: _filename)
             obj["instanceName"] = "self"
         }
         
@@ -120,9 +118,9 @@ public class XibProcessor: NSObject {
         var subObjs = [String]()
         if (subviewsIndexer.element != nil) {
             let subviews = subviewsIndexer.children
-            subviews.forEach({ (indexer) in
+            try subviews.forEach({ (indexer) in
                 subObjs.append(indexer.element!.idString)
-                enumerate(indexer, level: level+1)
+                try enumerate(indexer, level: level+1)
             })
         }
         
@@ -132,15 +130,17 @@ public class XibProcessor: NSObject {
     }
     
     // MARK: - Public Methods
-    public func process() {
+    public func process() throws -> String {
+        try getDictionaryFromXib()
+        
         guard let xml = _xml else {
-            return
+            throw Xib2ObjCError.parseXibToXmlFailed("can't parse xib to xml.")
         }
         
         // get all objects
         let root = xml["document"]["objects"].filterChildren { _, index in index > 1 }.children[0]
         
-        enumerate(root, level: 0)
+        try enumerate(root, level: 0)
         
         //construct output string
         for (_, object) in _objects.reversed() {
@@ -236,7 +236,9 @@ public class XibProcessor: NSObject {
             })
         }
         
-        generateFiles()
+        try generateFiles()
+        
+        return outputPath + "/\(viewFile.name)"
     }
     
     private func getProperties() -> String {
@@ -249,17 +251,17 @@ public class XibProcessor: NSObject {
         return propertyString
     }
     
-    private func generateFiles() {
+    private func generateFiles() throws {
         var viewHFileString = viewFileFormatDict["ViewHFileString"]!
-        viewHFileString = viewHFileString.replacingOccurrences(of: "[View-Name]", with: _viewFile.name)
-        viewHFileString = viewHFileString.replacingOccurrences(of: "[Inherit-Name]", with: _viewFile.inheritName)
+        viewHFileString = viewHFileString.replacingOccurrences(of: "[View-Name]", with: viewFile.name)
+        viewHFileString = viewHFileString.replacingOccurrences(of: "[Inherit-Name]", with: viewFile.inheritName)
         viewHFileString = viewHFileString.replacingOccurrences(of: "[Author]", with: projectInfo.author)
         viewHFileString = viewHFileString.replacingOccurrences(of: "[Date]", with: projectInfo.dateString)
         viewHFileString = viewHFileString.replacingOccurrences(of: "[Year]", with: projectInfo.yearString)
         
         var viewMFileString = viewFileFormatDict["ViewMFileString"]!
-        viewMFileString = viewMFileString.replacingOccurrences(of: "[View-Name]", with: _viewFile.name)
-        viewMFileString = viewMFileString.replacingOccurrences(of: "[Constructor]", with: _viewFile.constructor)
+        viewMFileString = viewMFileString.replacingOccurrences(of: "[View-Name]", with: viewFile.name)
+        viewMFileString = viewMFileString.replacingOccurrences(of: "[Constructor]", with: viewFile.constructor)
         viewMFileString = viewMFileString.replacingOccurrences(of: "[Date]", with: projectInfo.dateString)
         viewMFileString = viewMFileString.replacingOccurrences(of: "[Year]", with: projectInfo.yearString)
         viewMFileString = viewMFileString.replacingOccurrences(of: "[Author]", with: projectInfo.author)
@@ -271,20 +273,17 @@ public class XibProcessor: NSObject {
             do {
                 try fileMgr.createDirectory(atPath: outputPath, withIntermediateDirectories: false, attributes: nil)
             } catch {
-                print("create directory failed!")
+                throw Xib2ObjCError.createOutputDirFailed("can't create output directory: \(outputPath).")
             }
         }
-        let headerFilePath = outputPath + "/\(_viewFile.name).h"
-        let mFilePath = outputPath + "/\(_viewFile.name).m"
+        let headerFilePath = outputPath + "/\(viewFile.name).h"
+        let mFilePath = outputPath + "/\(viewFile.name).m"
         var data = viewHFileString.data(using: String.Encoding.utf8)
         fileMgr.createFile(atPath: headerFilePath, contents: data, attributes: nil)
         data = viewMFileString.data(using: String.Encoding.utf8)
         fileMgr.createFile(atPath: mFilePath, contents: data, attributes: nil)
         
         openFile(outputPath)
-        
-        print("headerFilePath:\(headerFilePath)")
-        print("mFilePath:\(mFilePath)")
     }
     
     public func inputAsText() -> String {

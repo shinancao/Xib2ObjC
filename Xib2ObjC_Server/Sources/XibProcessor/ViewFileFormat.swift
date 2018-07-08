@@ -13,7 +13,7 @@ let viewFileFormatDict = [
     "CallMethodString":"[self setupUI]"
 ]
 
-struct ViewFile {
+public struct ViewFile {
     let name: String
     let inheritName: String
     let constructor: String
