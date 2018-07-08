@@ -150,10 +150,14 @@ public class XibProcessor: NSObject {
             let klass = object["class"]!
             let constructor = object["constructor"]!
             if instanceName != "self" {
-                _output.append("    \(klass) *\(instanceName) = \(constructor);\n")
+                if object["userLabel"] != nil {
+                    _output.append("    \(instanceName) = \(constructor);\n")
+                } else {
+                    _output.append("    \(klass) *\(instanceName) = \(constructor);\n")
+                }
             }
             
-            object.sorted(by: {$0.0 < $1.0}).filter{(key, _) in !["instanceName", "class", "constructor"].contains(key) && !key.hasPrefix("__method__") }.forEach({ (key, value) in
+            object.sorted(by: {$0.0 < $1.0}).filter{(key, _) in !["instanceName", "class", "constructor", "userLabel"].contains(key) && !key.hasPrefix("__method__") }.forEach({ (key, value) in
                 _output.append("    \(instanceName).\(key) = \(value);\n")
             })
             
@@ -237,9 +241,9 @@ public class XibProcessor: NSObject {
     
     private func getProperties() -> String {
         var propertyString = ""
-        _objects.forEach { (identifier, obj) in
-            if let property = obj["property"] {
-                propertyString += "@property (nonatomic, strong) " + property + ";\n"
+        _objects.forEach { (_, object) in
+            if let userLabel = object["userLabel"] {
+                propertyString += "@property (nonatomic, strong) \(object["class"]!) *\(userLabel);\n"
             }
         }
         return propertyString
