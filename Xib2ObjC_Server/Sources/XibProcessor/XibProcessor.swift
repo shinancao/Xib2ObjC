@@ -96,7 +96,7 @@ public class XibProcessor: NSObject {
         
         var obj = p.process(indexer: indexer)
         if level == 0 {
-            _viewFile = ViewFile.getViewFile(klass: obj["class"]!, userLabel: obj["instanceName"]!)
+            _viewFile = ViewFile.getViewFile(klass: obj["class"]!, xibPath: _filename)
             obj["instanceName"] = "self"
         }
         

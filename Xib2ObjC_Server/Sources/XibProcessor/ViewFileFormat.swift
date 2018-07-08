@@ -18,9 +18,9 @@ struct ViewFile {
     let inheritName: String
     let constructor: String
     
-    static func getViewFile(klass:String, userLabel: String) -> ViewFile {
+    static func getViewFile(klass:String, xibPath: String) -> ViewFile {
         let callMethodString = viewFileFormatDict["CallMethodString"]!;
-        let name = userLabel.capitalizingFirstLetter()
+        let name = URL(fileURLWithPath: xibPath, isDirectory: false).deletingPathExtension().lastPathComponent
         let inheritName = klass
         var constructor = ""
         if klass == "UITableViewCell" {
