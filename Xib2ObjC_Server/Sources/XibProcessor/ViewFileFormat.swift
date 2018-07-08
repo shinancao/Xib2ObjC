@@ -10,7 +10,7 @@ import Foundation
 let viewFileFormatDict = [
     "ViewHFileString":"//\n// [View-Name].h\n// [Project-Name]\n//\n// Created by [Author] on [Date].\n// Copyright © [Year] [Organization]. All rights reserved.\n//\n\n#import <UIKit/UIKit.h>\n\n@interface [View-Name] : [Inherit-Name]\n\n@end",
     "ViewMFileString":"//\n// [View-Name].m\n// [Project-Name]\n//\n// Created by [Author] on [Date].\n// Copyright © [Year] [Organization]. All rights reserved.\n//\n\n#import \"[View-Name].h\"\n#import <Masonry/Masonry.h>\n\n@interface [View-Name]()\n\n[Property]\n@end\n\n@implementation [View-Name]\n\n[Constructor]\n\n- (void)setupUI {\n[UI-Layout]\n}\n\n@end",
-    "CallMethodString":"[self setupUI];"
+    "CallMethodString":"[self setupUI]"
 ]
 
 struct ViewFile {
