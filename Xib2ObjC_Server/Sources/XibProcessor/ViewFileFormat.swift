@@ -24,7 +24,7 @@ public struct ViewFile {
         let inheritName = klass
         var constructor = ""
         if klass == "UITableViewCell" {
-            constructor = "- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {\n    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {        \(callMethodString)\n    }\n    return self;\n}"
+            constructor = "- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {\n    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {\n        \(callMethodString);\n    }\n    return self;\n}"
         } else {
             constructor = "- (instancetype)initWithFrame:(CGRect)frame {\n    if (self = [super initWithFrame:frame]) {\n        \(callMethodString);\n    }\n    return self;\n}"
         }
