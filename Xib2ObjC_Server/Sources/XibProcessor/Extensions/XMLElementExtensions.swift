@@ -26,28 +26,38 @@ extension SWXMLHash.XMLElement {
             }
         }
         
-        let colorSpace = attribute(by: "colorSpace")?.text
-        if let colorSpace = colorSpace {
-            if colorSpace == "calibratedWhite" {
+        let customColorSpace = attribute(by: "customColorSpace")?.text
+        if let customColorSpace = customColorSpace {
+            if customColorSpace == "genericGamma22GrayColorSpace" {
                 let WA = spaceValue(["white", "alpha"])
                 return "[UIColor colorWithWhite:\(WA["white"]!) alpha:\(WA["alpha"]!)]"
-                
-            } else if colorSpace == "custom" || colorSpace == "calibratedRGB" {
+            } else if customColorSpace == "sRGB" {
                 let RGBA = spaceValue(["red", "green", "blue", "alpha"])
                 return "[UIColor colorWithRed:\(RGBA["red"]!) green:\(RGBA["green"]!) blue:\(RGBA["blue"]!) alpha:\(RGBA["alpha"]!)]"
-            } else {
-                return "unknown colorSpace"
             }
         } else {
-            let sysColor = attribute(by: "cocoaTouchSystemColor")!.text
-            return "[UIColor \(sysColor)]"
+            let colorSpace = attribute(by: "colorSpace")?.text
+            if let colorSpace = colorSpace {
+                if colorSpace == "calibratedRGB" {
+                    let RGBA = spaceValue(["red", "green", "blue", "alpha"])
+                    return "[UIColor colorWithRed:\(RGBA["red"]!) green:\(RGBA["green"]!) blue:\(RGBA["blue"]!) alpha:\(RGBA["alpha"]!)]"
+                } else if colorSpace == "calibratedWhite" {
+                    let WA = spaceValue(["white", "alpha"])
+                    return "[UIColor colorWithWhite:\(WA["white"]!) alpha:\(WA["alpha"]!)]"
+                }
+            }
         }
+        return "unknow colorSpace"
     }
     
     var rectString: String {
-        let rect = allAttributes.filter{key, _ in ["x", "y", "width", "height"].contains(key)}.map{_, value in value.text}
+        let rect = allAttributes.filter{key, _ in ["x", "y", "width", "height"].contains(key)}.map{_, value in [value.name: value.text]}.reduce([String: String]()) { (dict1, dict2) -> [String: String] in
+            var dict = dict1
+            dict2.forEach{(k,v) in dict[k] = v }
+            return dict
+        }
         
-        return "CGRectMake(\(rect[0]), \(rect[1]), \(rect[2]), \(rect[3]))"
+        return "CGRectMake(\(rect["x"]!), \(rect["y"]!), \(rect["width"]!), \(rect["height"]!))"
     }
     
     var classNameString: String {
