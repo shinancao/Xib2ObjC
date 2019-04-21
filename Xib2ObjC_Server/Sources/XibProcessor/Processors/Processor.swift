@@ -47,8 +47,8 @@ extension Processor {
             return UITableViewCellProcessor()
         case "collectionViewCell":
             return UICollectionViewCellProcessor()
-//        case "collectionView":
-//            return UICollectionViewProcessor()
+        case "collectionView":
+            return UICollectionViewProcessor()
         default:
             return nil
         }
