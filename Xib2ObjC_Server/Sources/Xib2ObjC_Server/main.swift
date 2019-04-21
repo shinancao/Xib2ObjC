@@ -2,7 +2,7 @@ import XibProcessor
 import Rainbow
 
 let processor = XibProcessor()
-processor.input = "/Users/zn/Documents/workplace/TextXIB/TestXIB/ViewA.xib"
+processor.input = "/Users/zn/Documents/workplace/TextXIB/TestXIB/TestCollectionView.xib"
 
 do {
     let filePath = try processor.process()
