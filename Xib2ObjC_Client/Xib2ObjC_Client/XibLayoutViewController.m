@@ -7,8 +7,11 @@
 //
 
 #import "XibLayoutViewController.h"
+#import "StreamHelper.h"
 
 @interface XibLayoutViewController ()
+
+@property (nonatomic, strong) StreamHelper *streamHelper;
 
 @end
 
@@ -21,6 +24,8 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Generate Code" style:UIBarButtonItemStylePlain target:self action:@selector(generateCodeAction:)];
     
     [self configView];
+    
+    self.streamHelper = [[StreamHelper alloc] init];
 }
 
 - (void)configView {

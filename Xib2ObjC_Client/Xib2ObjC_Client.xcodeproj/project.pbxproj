@@ -18,6 +18,7 @@
 		163CFBC9226C7BE500FFCD05 /* XibFileHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 163CFBC8226C7BE500FFCD05 /* XibFileHelper.m */; };
 		163CFBCC226CA8F600FFCD05 /* XibLayoutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 163CFBCB226CA8F600FFCD05 /* XibLayoutViewController.m */; };
 		16D62A092291262200417982 /* TestView2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 16D62A082291262200417982 /* TestView2.xib */; };
+		16D62A0C2291795800417982 /* StreamHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D62A0B2291795800417982 /* StreamHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,8 @@
 		163CFBCA226CA8F600FFCD05 /* XibLayoutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XibLayoutViewController.h; sourceTree = "<group>"; };
 		163CFBCB226CA8F600FFCD05 /* XibLayoutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XibLayoutViewController.m; sourceTree = "<group>"; };
 		16D62A082291262200417982 /* TestView2.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TestView2.xib; sourceTree = "<group>"; };
+		16D62A0A2291795800417982 /* StreamHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StreamHelper.h; sourceTree = "<group>"; };
+		16D62A0B2291795800417982 /* StreamHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StreamHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +134,8 @@
 			children = (
 				163CFBC7226C7BE500FFCD05 /* XibFileHelper.h */,
 				163CFBC8226C7BE500FFCD05 /* XibFileHelper.m */,
+				16D62A0A2291795800417982 /* StreamHelper.h */,
+				16D62A0B2291795800417982 /* StreamHelper.m */,
 			);
 			path = Helper;
 			sourceTree = SOURCE_ROOT;
@@ -242,6 +247,7 @@
 				163CFBA9226C763800FFCD05 /* main.m in Sources */,
 				163CFB9B226C763700FFCD05 /* AppDelegate.m in Sources */,
 				163CFBCC226CA8F600FFCD05 /* XibLayoutViewController.m in Sources */,
+				16D62A0C2291795800417982 /* StreamHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
