@@ -25,25 +25,10 @@
 #pragma mark - NSStreamDelegate
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
     switch (eventCode) {
-        case NSStreamEventOpenCompleted:
-            NSLog(@"客户端输入输出流打开完成");
-            break;
         case NSStreamEventHasBytesAvailable:
-            NSLog(@"客户端有字节可读");
-            break;
-        case NSStreamEventHasSpaceAvailable:
-            NSLog(@"客户端可以发送字节");
-            break;
-        case NSStreamEventErrorOccurred:
-            NSLog(@"客户端连接出现错误");
-            break;
-        case NSStreamEventEndEncountered:
-            NSLog(@"客户端连接结束");
-            [_inputStream close];
-            [_outputStream close];
-            
-            [_inputStream removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-            [_outputStream removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+            if (aStream == _inputStream) {
+                [self readData];
+            }
             break;
         default:
             break;
@@ -54,12 +39,12 @@
     uint8_t buf[1024];
     NSInteger len = [_inputStream read:buf maxLength:sizeof(buf)];
     NSData *data = [NSData dataWithBytes:buf length:len];
-    NSString *recivedString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"Socket:读取从服务端发来的消息:%@",recivedString);
+    NSString *receivedString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"Client received:%@",receivedString);
 }
 
-- (void)connectServer {
-    NSString *host = @"192.168.1.103";
+- (void)open {
+    NSString *host = @"::1";
     int port = 8585;
     
     CFReadStreamRef readStreamRef;
@@ -71,16 +56,26 @@
     _inputStream.delegate = self;
     _outputStream.delegate = self;
     
+    [_inputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    [_outputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    
     [_inputStream open];
     [_outputStream open];
     
 }
 
-- (instancetype)init {
-    if (self = [super init]) {
-        [self connectServer];
-    }
-    return self;
+- (void)close {
+    [_inputStream close];
+    [_outputStream close];
+    
+    [_inputStream removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    [_outputStream removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    
+    _inputStream.delegate = nil;
+    _outputStream.delegate = nil;
+    
+    _inputStream = nil;
+    _outputStream = nil;
 }
 
 @end

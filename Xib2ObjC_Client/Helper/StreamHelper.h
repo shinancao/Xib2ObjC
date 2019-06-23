@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface StreamHelper : NSObject
 
 - (void)sendMsg:(NSString *)message;
+- (void)open;
+- (void)close;
 
 @end
 

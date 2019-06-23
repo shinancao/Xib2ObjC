@@ -7,9 +7,10 @@
 //
 
 #import "AppDelegate.h"
+#import "StreamHelper.h"
 
 @interface AppDelegate ()
-
+@property (nonatomic, strong) StreamHelper *streamHelper;
 @end
 
 @implementation AppDelegate
@@ -17,6 +18,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    self.streamHelper = [[StreamHelper alloc] init];
+    [self.streamHelper open];
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"com.xib2objc.sendMsg" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        [self.streamHelper sendMsg:note.object];
+    }];
     return YES;
 }
 
@@ -45,6 +51,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [self.streamHelper close];
 }
 
 
