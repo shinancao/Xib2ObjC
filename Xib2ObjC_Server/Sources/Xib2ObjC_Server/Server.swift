@@ -144,8 +144,8 @@ class Server {
                         }
                         
                         if response.hasPrefix(Server.parseCommand) {
-                            let path = String(response.split(separator: ":").last ?? "")
-                            self.paserXib(path: path)
+                            let xibName = String(response.split(separator: ":").last ?? "")
+                            self.paserXib(name: xibName)
                         }
                     }
                     
@@ -198,15 +198,20 @@ class Server {
         }
     }
     
-    func paserXib(path: String) {
-        guard path != "" else {
-            print("xib path is empty.".red.bold)
+    func paserXib(name: String) {
+        guard name != "" else {
+            print("xib name is empty.".red.bold)
             return
         }
         
+        // get complete xib path
+        let fileMgr = FileManager.default
+        var path = fileMgr.currentDirectoryPath
+        path = path.replacingOccurrences(of: "Server", with: "Client") + "/Xib/" + name + ".xib"
+        
         let processor = XibProcessor()
         processor.input = path
-        
+
         do {
             let filePath = try processor.process()
             print("\(filePath).h is generated.".green.bold)
