@@ -17,6 +17,7 @@
 		163CFBC5226C79E600FFCD05 /* StartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 163CFBC4226C79E600FFCD05 /* StartViewController.m */; };
 		163CFBC9226C7BE500FFCD05 /* XibFileHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 163CFBC8226C7BE500FFCD05 /* XibFileHelper.m */; };
 		163CFBCC226CA8F600FFCD05 /* XibLayoutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 163CFBCB226CA8F600FFCD05 /* XibLayoutViewController.m */; };
+		1673EF7522BFA20500C25765 /* TestCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1673EF7422BFA20500C25765 /* TestCell.xib */; };
 		16D62A092291262200417982 /* TestView2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 16D62A082291262200417982 /* TestView2.xib */; };
 		16D62A0C2291795800417982 /* StreamHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D62A0B2291795800417982 /* StreamHelper.m */; };
 /* End PBXBuildFile section */
@@ -50,6 +51,7 @@
 		163CFBC8226C7BE500FFCD05 /* XibFileHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XibFileHelper.m; sourceTree = "<group>"; };
 		163CFBCA226CA8F600FFCD05 /* XibLayoutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XibLayoutViewController.h; sourceTree = "<group>"; };
 		163CFBCB226CA8F600FFCD05 /* XibLayoutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XibLayoutViewController.m; sourceTree = "<group>"; };
+		1673EF7422BFA20500C25765 /* TestCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TestCell.xib; sourceTree = "<group>"; };
 		16D62A082291262200417982 /* TestView2.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TestView2.xib; sourceTree = "<group>"; };
 		16D62A0A2291795800417982 /* StreamHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StreamHelper.h; sourceTree = "<group>"; };
 		16D62A0B2291795800417982 /* StreamHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StreamHelper.m; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 			children = (
 				163CFBBE226C788600FFCD05 /* TestView.xib */,
 				16D62A082291262200417982 /* TestView2.xib */,
+				1673EF7422BFA20500C25765 /* TestCell.xib */,
 			);
 			path = Xib;
 			sourceTree = SOURCE_ROOT;
@@ -225,6 +228,7 @@
 				16D62A092291262200417982 /* TestView2.xib in Resources */,
 				163CFBA3226C763800FFCD05 /* Assets.xcassets in Resources */,
 				163CFBA1226C763700FFCD05 /* Main.storyboard in Resources */,
+				1673EF7522BFA20500C25765 /* TestCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
