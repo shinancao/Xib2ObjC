@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "Socket",
+        "repositoryURL": "https://github.com/IBM-Swift/BlueSocket.git",
+        "state": {
+          "branch": null,
+          "revision": "ccc671b022bc60e5fffcb2aa15f499c6331bfd18",
+          "version": "1.0.46"
+        }
+      },
+      {
         "package": "Rainbow",
         "repositoryURL": "https://github.com/onevcat/Rainbow",
         "state": {
