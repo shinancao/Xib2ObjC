@@ -8,7 +8,7 @@
 
 #import "XibLayoutViewController.h"
 
-@interface XibLayoutViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface XibLayoutViewController ()<UITableViewDataSource, UICollectionViewDataSource>
 
 @end
 
@@ -24,32 +24,32 @@
 }
 
 - (void)configView {
-    UIView *containerView = [[[NSBundle mainBundle] loadNibNamed:self.xibName owner:self options:nil] lastObject];
+    UIView *xibView = [[[NSBundle mainBundle] loadNibNamed:self.xibName owner:self options:nil] lastObject];
+    CGFloat width = CGRectGetWidth(xibView.frame);
+    CGFloat height = CGRectGetHeight(xibView.frame);
     
-    if ([containerView isKindOfClass:[UITableViewCell class]]) {
+    if ([xibView isKindOfClass:[UITableViewCell class]]) {
         [self configTableView];
         return;
     }
     
-    if ([containerView isKindOfClass:[UICollectionViewCell class]]) {
-        [self configCollectionView];
+    if ([xibView isKindOfClass:[UICollectionViewCell class]]) {
+        [self configCollectionViewWithSize: CGSizeMake(width, height)];
         return;
     }
     
-    [self.view addSubview:containerView];
-    [containerView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.view addSubview:xibView];
+    [xibView setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     // 让要展示的界面居中
-    NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(containerView);
+    NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(xibView);
     
-    CGFloat width = CGRectGetWidth(containerView.frame);
-    CGFloat height = CGRectGetHeight(containerView.frame);
     NSDictionary *metrics = @{@"width": @(width), @"height": @(height)};
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[containerView(==width)]" options:0 metrics:metrics views:viewsDictionary]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[containerView(==height)]" options:0 metrics:metrics views:viewsDictionary]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:containerView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:containerView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:xibView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:xibView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
 }
 
 - (void)configTableView {
@@ -61,14 +61,27 @@
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[tableView]-0-|" options:0 metrics:nil views:viewsDictionary]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[tableView]-|" options:0 metrics:nil views:viewsDictionary]];
     
-    tableView.delegate = self;
     tableView.dataSource = self;
     
     [tableView registerNib:[UINib nibWithNibName:self.xibName bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"tableCell"];
 }
 
-- (void)configCollectionView {
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:<#(nonnull UICollectionViewLayout *)#>];
+- (void)configCollectionViewWithSize:(CGSize)itemSize {
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    layout.itemSize = itemSize;
+    
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:layout];
+    collectionView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:collectionView];
+    [collectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(collectionView);
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[collectionView]-0-|" options:0 metrics:nil views:viewsDictionary]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[collectionView]-|" options:0 metrics:nil views:viewsDictionary]];
+    
+    collectionView.dataSource = self;
+    
+    [collectionView registerNib:[UINib nibWithNibName:self.xibName bundle:[NSBundle mainBundle]] forCellWithReuseIdentifier:@"collectionCell"];
 }
 
 - (void)generateCodeAction:(id)sender {
@@ -76,7 +89,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"com.xib2objc.sendMsg" object:cmd];
 }
 
-#pragma mark - Table view data source
+#pragma mark - Table View Data Source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
     return 1;
@@ -90,6 +103,20 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tableCell" forIndexPath:indexPath];
+    return cell;
+}
+
+#pragma mark - Collection View Data Source
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return 1;
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+- (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"collectionCell" forIndexPath:indexPath];
     return cell;
 }
 
