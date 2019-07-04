@@ -31,6 +31,11 @@
         return;
     }
     
+    if ([containerView isKindOfClass:[UICollectionViewCell class]]) {
+        [self configCollectionView];
+        return;
+    }
+    
     [self.view addSubview:containerView];
     [containerView setTranslatesAutoresizingMaskIntoConstraints:NO];
     
@@ -45,7 +50,6 @@
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[containerView(==height)]" options:0 metrics:metrics views:viewsDictionary]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:containerView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:containerView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    
 }
 
 - (void)configTableView {
@@ -61,6 +65,10 @@
     tableView.dataSource = self;
     
     [tableView registerNib:[UINib nibWithNibName:self.xibName bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"tableCell"];
+}
+
+- (void)configCollectionView {
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:<#(nonnull UICollectionViewLayout *)#>];
 }
 
 - (void)generateCodeAction:(id)sender {
