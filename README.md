@@ -51,20 +51,20 @@ Listening on port: 8585
 
 - build and run `Xib2ObjC_Client`, and to see it in the Simulator. The list view will show all the xib files's name in the `Xib` folder.
 
-<img src="https://raw.github.com/shinancao/Xib2ObjC/master/Screenshots/xib_list.png" />
+<img src="https://raw.github.com/shinancao/Xib2ObjC/master/Screenshots/xib_list.png" width="216" height="187"/>
 
 - select the xib you want to see, then tap `Generate Code`.
 
-<img src="https://raw.github.com/shinancao/Xib2ObjC/master/Screenshots/generate_code.png" />
+<img src="https://raw.github.com/shinancao/Xib2ObjC/master/Screenshots/generate_code.png" width="210" height="341"/>
 
 - Now Terminal will receive message, if there is no error, the folder that contains the generated files will open for you, its default path is `Xib2ObjC_GeneratedViews` on your desk.
 
 <img src="https://raw.github.com/shinancao/Xib2ObjC/master/Screenshots/result.png" />
 
-TODO
+Others
 -------
-
-
+- The process from xib xml to Cocoa UI Object is influenced by <https://github.com/akosma/nib2objc>.
+- Welcom to advise some other features and open issues. If you're interested in this project, kindly hope you could give me some ✨✨.  
 
 License
 -------
