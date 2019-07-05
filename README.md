@@ -64,7 +64,7 @@ Listening on port: 8585
 Others
 -------
 - The process from xib xml to Cocoa UI Object is influenced by <https://github.com/akosma/nib2objc>.
-- Welcom to advise some other features and open issues. If you're interested in this project, kindly hope you could give me some ✨✨.  
+- Welcom to advise some other features and open issues. If you're interested in this project, kindly hope you could give me a ✨.  
 
 License
 -------
