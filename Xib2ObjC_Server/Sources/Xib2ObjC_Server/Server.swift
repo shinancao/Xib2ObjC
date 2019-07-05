@@ -224,6 +224,8 @@ class Server {
             print(errorMsg.red.bold)
         } catch Xib2ObjCError.parseXibToXmlFailed(let errorMsg) {
             print(errorMsg.red.bold)
+        } catch Xib2ObjCError.notSupportSafeArea(let errorMsg) {
+            print(errorMsg.red.bold)
         } catch {
             print("Unexpected error: \(error).".red.bold)
         }

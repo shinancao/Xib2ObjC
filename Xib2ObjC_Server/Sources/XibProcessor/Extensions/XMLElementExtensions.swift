@@ -147,4 +147,12 @@ extension SWXMLHash.XMLElement {
             return "equalTo"
         }
     }
+    
+    var isSafeArea: Bool {
+        if let key = attribute(by: "key")?.text, key == "safeArea" {
+            return true
+        } else {
+            return false
+        }
+    }
 }

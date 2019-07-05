@@ -140,6 +140,10 @@ public class XibProcessor: NSObject {
         // get all objects
         let root = xml["document"]["objects"].filterChildren { _, index in index > 1 }.children[0]
         
+        if let guide = root["viewLayoutGuide"].element, guide.isSafeArea {
+            throw Xib2ObjCError.notSupportSafeArea("please uncheck \"Use Safe Area Layout Guides\" in your xib.")
+        }
+        
         try enumerate(root, level: 0)
         
         //construct output string

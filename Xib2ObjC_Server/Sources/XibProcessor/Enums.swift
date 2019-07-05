@@ -12,4 +12,5 @@ public enum Xib2ObjCError: Error {
     case xibFileNotExist(String)
     case unknownXibObject(String)
     case parseXibToXmlFailed(String)
+    case notSupportSafeArea(String)
 }
